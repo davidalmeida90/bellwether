@@ -1,0 +1,138 @@
+# Bellwether :: trending taxonomy
+#
+# Themes for the daily GitHub trending boards, which are general purpose and
+# mostly not finance. Matching is the same idea as themes.yaml, simpler because
+# a trending row carries only a name, a description, a language and topics:
+#
+#   topics   exact GitHub topic
+#   include  regex over owner/name + description + topics
+#   exclude  regex that vetoes a match
+#
+# A row can carry several themes. Anything that matches nothing lands in
+# "other", which is a real listing rather than a bin: the first place to look
+# when a theme needs widening.
+#
+# Edit this file and re-run `py -3 ingest/trending.py --classify`.
+
+themes:
+  - slug: ai-agents
+    label: AI agents
+    ord: 10
+    topics: [ai-agents, agents, autonomous-agents, agentic, mcp, model-context-protocol, multi-agent]
+    include: >-
+      \bagent(s|ic)?\b|agent framework|autonomous|multi[- ]agent|tool[- ]call|
+      \bmcp\b|model context protocol|computer use|browser use|coding assistant|
+      \bswarm\b|orchestrat\w+ (llm|agent)
+    exclude: user[- ]agent|agent orange|sales agent
+
+  - slug: llm-apps
+    label: LLM apps & RAG
+    ord: 20
+    topics: [llm, rag, chatbot, langchain, llamaindex, openai, chatgpt, prompt-engineering, embeddings, vector-database]
+    include: >-
+      \bllm(s)?\b|large language model|\brag\b|retrieval[- ]augmented|
+      chatbot|\bprompt\b|prompt engineering|vector (database|store|search)|
+      embedding|semantic search|knowledge base|copilot|\bgpt\b|claude|gemini
+    exclude: gpt partition|guid
+
+  - slug: models-training
+    label: Models & training
+    ord: 30
+    topics: [machine-learning, deep-learning, pytorch, transformers, fine-tuning, diffusion-models, computer-vision, nlp, speech]
+    include: >-
+      fine[- ]tun|pre[- ]train|\btraining\b|transformer|diffusion model|
+      text[- ]to[- ](image|video|speech)|image generation|speech recognition|
+      computer vision|neural network|deep learning|reinforcement learning|
+      \bsota\b|foundation model|multimodal
+    exclude: model railway
+
+  - slug: inference-serving
+    label: Inference & serving
+    ord: 40
+    topics: [inference, llm-inference, quantization, cuda, gpu, vllm, llama-cpp, onnx, triton]
+    include: >-
+      inference (engine|server|speed)|serving|quantiz|\bggu[fm]\b|llama\.cpp|
+      \bcuda\b|\bgpu\b|kernel fusion|kv cache|throughput|low latency|
+      edge (deploy|inference)|on[- ]device
+    exclude: gpu driver bug
+
+  - slug: data-eng
+    label: Data & analytics
+    ord: 50
+    topics: [database, sql, etl, data-engineering, analytics, duckdb, postgres, data-pipeline, spark]
+    include: >-
+      \bsql\b|database|data (pipeline|warehouse|lake|catalog|quality)|\betl\b|
+      query engine|olap|analytics|dataframe|columnar|stream processing|
+      \bkafka\b|\bspark\b|duckdb|postgres|clickhouse
+    exclude: sql injection scanner
+
+  - slug: devtools
+    label: Developer tools
+    ord: 60
+    topics: [cli, developer-tools, terminal, editor, neovim, vscode, git, devops, build-tool]
+    include: >-
+      \bcli\b|command[- ]line|terminal|\btui\b|editor|\bide\b|neovim|
+      language server|linter|formatter|build (tool|system)|package manager|
+      \bgit\b|code review|debugger|profiler|scaffold
+    exclude: cli of a game
+
+  - slug: infra-cloud
+    label: Infra & cloud
+    ord: 70
+    topics: [kubernetes, docker, devops, cloud, terraform, observability, self-hosted, proxy]
+    include: >-
+      kubernetes|\bk8s\b|docker|container|serverless|terraform|infrastructure as code|
+      observability|monitoring|logging|tracing|service mesh|load balanc|
+      self[- ]host|reverse proxy|\bci/cd\b|deployment
+    exclude: docker for mac issue
+
+  - slug: web-apps
+    label: Web & apps
+    ord: 80
+    topics: [react, nextjs, vue, svelte, typescript, frontend, tailwindcss, mobile, flutter, ui]
+    include: >-
+      \breact\b|next\.js|\bvue\b|svelte|frontend|front[- ]end|\bui kit\b|
+      component library|tailwind|design system|web app|\bspa\b|mobile app|
+      \bios\b|android|flutter|react native|desktop app|electron
+    exclude: react to news
+
+  - slug: systems-langs
+    label: Systems & languages
+    ord: 90
+    topics: [rust, golang, cpp, zig, compiler, operating-system, wasm, embedded]
+    include: >-
+      compiler|interpreter|\bruntime\b|virtual machine|operating system|
+      \bkernel\b|\bwasm\b|webassembly|embedded|firmware|memory safe|
+      written in (rust|zig|go|c\+\+)|systems programming|\bjit\b
+    exclude: kernel of truth
+
+  - slug: security
+    label: Security
+    ord: 100
+    topics: [security, pentesting, cybersecurity, cryptography, privacy, malware-analysis]
+    include: >-
+      security|vulnerab|\bexploit\b|pentest|red team|malware|reverse engineer|
+      cryptograph|encryption|privacy|zero[- ]day|\bcve\b|authentication|
+      \bsandbox\b|threat
+    exclude: security of tenure
+
+  - slug: quant-finance
+    label: Quant & finance
+    ord: 110
+    topics: [trading, quantitative-finance, algorithmic-trading, cryptocurrency, backtesting, fintech]
+    include: >-
+      trading|\bquant\b|portfolio (optimi|risk|alloc|construct|manage)|
+      backtest|\balpha\b research|market data|
+      order book|derivative|option pricing|risk model|\bhft\b|
+      crypto (trading|exchange)|\bdefi\b|payment|accounting|invoic
+    exclude: alpha channel|alpha release|alpha version|portfolio (website|site|of projects)
+
+  - slug: learning
+    label: Learning & lists
+    ord: 120
+    topics: [awesome, tutorial, roadmap, education, interview, books]
+    include: >-
+      \bawesome\b|curated list|roadmap|tutorial|course|\bbook\b|cheat ?sheet|
+      interview (question|prep)|learn(ing)? (path|resource)|from scratch|
+      \bexamples?\b collection|study guide
+    exclude: machine learning$

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-module="papers">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bellwether</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234C7FB8' stroke-width='2'%3E%3Cpath d='M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9'/%3E%3Cpath d='M13.7 21a2 2 0 0 1-3.4 0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="mark" width="17" height="17" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+      <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+    </svg>
+    <span class="wordmark">Bellwether</span>
+  </div>
+
+  <nav class="modules" role="tablist">
+    <button class="mod is-on" data-mod="papers" role="tab">Papers</button>
+    <button class="mod" data-mod="repos" role="tab">GitHub</button>
+    <button class="mod" data-mod="trending" role="tab">Trending</button>
+  </nav>
+
+  <div class="searchwrap">
+    <input id="search" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Search titles, abstracts, authors&hellip;   &quot;exact phrase&quot; supported">
+    <kbd class="hint">/</kbd>
+  </div>
+
+  <button class="bell" id="bell" title="Alerts">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+    </svg>
+    <span class="bellcount" id="bellcount" hidden>0</span>
+  </button>
+
+  <div class="topmeta">
+    <span id="dbstat" class="fig"></span>
+  </div>
+</header>
+
+<main class="shell">
+
+  <aside class="rail" id="rail">
+    <section class="railblock" data-for="papers">
+      <h3>Period</h3>
+      <div class="chips" id="periods">
+        <button class="chip" data-months="12">1y</button>
+        <button class="chip" data-months="36">3y</button>
+        <button class="chip" data-months="60">5y</button>
+        <button class="chip is-on" data-months="0">All</button>
+      </div>
+      <div class="daterow">
+        <input type="date" id="date_from" aria-label="from date">
+        <span class="sep">to</span>
+        <input type="date" id="date_to" aria-label="to date">
+      </div>
+    </section>
+
+    <section class="railblock" data-for="papers">
+      <h3>Sort</h3>
+      <div class="radios" id="paper-sort">
+        <label><input type="radio" name="psort" value="recent" checked> Newest</label>
+        <label><input type="radio" name="psort" value="cited"> Most cited</label>
+        <label><input type="radio" name="psort" value="revised"> Recently revised</label>
+        <label><input type="radio" name="psort" value="relevance"> Best match</label>
+      </div>
+    </section>
+
+    <section class="railblock" data-for="repos">
+      <h3>Sort</h3>
+      <div class="radios" id="repo-sort">
+        <label><input type="radio" name="rsort" value="popular" checked> Popular</label>
+        <label><input type="radio" name="rsort" value="growing"> Growing</label>
+        <label><input type="radio" name="rsort" value="active"> Recently active</label>
+        <label><input type="radio" name="rsort" value="new"> New to the list</label>
+      </div>
+    </section>
+
+    <section class="railblock" data-for="papers">
+      <h3>Type</h3>
+      <div class="chips" id="venuetypes">
+        <button class="chip" data-vt="preprint">Preprint</button>
+        <button class="chip" data-vt="journal">Journal</button>
+        <button class="chip" data-vt="working_paper">Working paper</button>
+      </div>
+    </section>
+
+    <section class="railblock" data-for="trending">
+      <h3>Board</h3>
+      <div class="chips" id="windows">
+        <button class="chip is-on" data-window="daily">Today</button>
+        <button class="chip" data-window="weekly">This week</button>
+      </div>
+      <select id="board">
+        <option value="">All languages</option>
+        <option value="python">Python</option>
+        <option value="typescript">TypeScript</option>
+        <option value="rust">Rust</option>
+        <option value="go">Go</option>
+      </select>
+      <h3 class="spaced">Day</h3>
+      <select id="trendday"><option value="">Latest captured</option></select>
+      <h3 class="spaced">Sort</h3>
+      <div class="radios" id="trend-sort">
+        <label><input type="radio" name="tsort" value="rank" checked> Board order</label>
+        <label><input type="radio" name="tsort" value="gained"> Stars gained</label>
+        <label><input type="radio" name="tsort" value="run"> Longest run</label>
+        <label><input type="radio" name="tsort" value="stars"> Total stars</label>
+      </div>
+      <label class="toggle"><input type="checkbox" id="new_only"> First time on the board</label>
+    </section>
+
+    <section class="railblock" data-for="repos">
+      <h3>Language</h3>
+      <select id="language"><option value="">Any language</option></select>
+      <h3 class="spaced">Minimum stars</h3>
+      <input type="number" id="min_stars" min="0" step="50" placeholder="0">
+    </section>
+
+    <section class="railblock" data-for="papers">
+      <h3>Minimum citations</h3>
+      <input type="number" id="min_citations" min="0" step="10" placeholder="0">
+    </section>
+
+    <section class="railblock">
+      <h3>Filters</h3>
+      <label class="toggle" data-for="papers">
+        <input type="checkbox" id="pdf_only"> Open PDF only
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="saved_only"> Saved only
+      </label>
+    </section>
+
+    <footer class="railfoot">
+      <span id="ingestinfo"></span>
+    </footer>
+  </aside>
+
+  <section class="results">
+    <div class="themebar">
+      <div id="themes" class="themes"></div>
+      <button class="linkish" id="clear-themes" hidden>clear all</button>
+    </div>
+    <div class="resulthead">
+      <span id="count" class="count fig">&mdash;</span>
+      <span id="activefilters" class="activefilters"></span>
+      <span class="grow"></span>
+      <button class="pager" id="prev" disabled>&larr;</button>
+      <span id="pageinfo" class="fig">&mdash;</span>
+      <button class="pager" id="next" disabled>&rarr;</button>
+    </div>
+    <ol id="list" class="list" tabindex="0"></ol>
+    <div id="empty" class="empty" hidden></div>
+  </section>
+
+  <section class="detail" id="detail" hidden aria-live="polite"></section>
+</main>
+
+<aside class="alerts" id="alerts" hidden>
+  <header class="alerts-head">
+    <h2>Alerts</h2>
+    <button class="linkish" id="alerts-seen">mark all read</button>
+    <button class="closebtn" id="alerts-close" title="Close">&times;</button>
+  </header>
+
+  <form class="alertform" id="alertform">
+    <input type="text" id="a_label" maxlength="80" placeholder="Name this alert" required>
+    <div class="arow">
+      <select id="a_theme"><option value="">Any theme</option></select>
+      <input type="text" id="a_keyword" maxlength="80" placeholder="Keyword (optional)">
+    </div>
+    <div class="arow">
+      <input type="number" id="a_min" min="0" step="50" placeholder="Min stars gained">
+      <label class="toggle"><input type="checkbox" id="a_desktop" checked> Desktop notification</label>
+    </div>
+    <button class="btn primary" type="submit">Add alert</button>
+  </form>
+
+  <h4>Rules</h4>
+  <ul class="rulelist" id="rulelist"></ul>
+  <h4>Caught recently</h4>
+  <ul class="hitlist" id="hitlist"></ul>
+</aside>
+
+<div class="keyhelp" id="keyhelp">
+  <b>/</b> search &nbsp; <b>j</b>/<b>k</b> move &nbsp; <b>Enter</b> open<br>
+  <b>o</b> open link &nbsp; <b>s</b> save &nbsp; <b>Esc</b> close
+</div>
+
+<script src="/static/app.js?v=2"></script>
+</body>
+</html>

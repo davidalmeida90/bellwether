@@ -1,0 +1,276 @@
+# Bellwether :: theme taxonomy
+#
+# Every theme is defined by three matchers, all optional:
+#   arxiv_cats  exact arXiv category match on a paper
+#   gh_topics   exact GitHub topic match on a repo
+#   include     regex over title + abstract (papers) or name + description + readme (repos)
+#   exclude     regex that vetoes a match
+#
+# Scoring: category/topic hit = 1.0, keyword hit = 0.6 (capped at 1.0 when both).
+# Edit this file and re-run `py -3 refresh.py --classify` to reclassify everything.
+
+themes:
+  - slug: volatility-options
+    label: Volatility & Options
+    ord: 10
+    arxiv_cats: [q-fin.PR]
+    gh_topics: [options, options-pricing, volatility, implied-volatility, option-pricing, vix, quantlib]
+    include: >-
+      implied volatilit|volatility surface|volatility smile|local volatilit|
+      stochastic volatilit|rough volatilit|variance swap|vix|option pricing|
+      options market|greeks|vega|gamma hedg|straddle|volatility risk premium|
+      heston|sabr model|black[- ]scholes|volatility forecast
+    exclude: volatility of (inflation|gdp|exchange rate)
+
+  - slug: derivatives-pricing
+    label: Derivatives & Pricing
+    ord: 20
+    arxiv_cats: [q-fin.PR, q-fin.CP, q-fin.MF]
+    gh_topics: [derivatives, quantlib, pricing, monte-carlo, exotic-options, xva]
+    include: >-
+      derivative pricing|exotic option|american option|barrier option|asian option|
+      european option|bermudan option|
+      option.{0,15}pricing|pricing.{0,15}option|
+      swaption|interest rate derivative|credit derivative|cva|xva|
+      jump[- ]diffusion|levy process|fractional brownian|
+      martingale pricing|risk[- ]neutral|numerical method.{0,20}pricing|
+      finite difference.{0,20}(pde|option)|least squares monte carlo|longstaff
+
+  - slug: market-microstructure
+    label: Market Microstructure
+    ord: 30
+    arxiv_cats: [q-fin.TR]
+    gh_topics: [market-microstructure, limit-order-book, orderbook, hft, high-frequency-trading, tick-data]
+    include: >-
+      limit order book|order flow|microstructure|bid[- ]ask spread|market maker|
+      market making|price impact|liquidity provision|tick data|
+      high[- ]frequency trading|latency arbitrage|queue position|adverse selection|
+      order imbalance|kyle model|hawkes process
+
+  - slug: execution-algo-trading
+    label: Execution & Algo Trading
+    ord: 40
+    arxiv_cats: [q-fin.TR, q-fin.CP]
+    gh_topics: [algorithmic-trading, trading-bot, backtesting, trading-strategies, quantitative-trading, execution, order-execution, trading]
+    include: >-
+      optimal execution|execution algorithm|vwap|twap|implementation shortfall|
+      almgren|transaction cost|slippage|trading strategy|backtest|
+      systematic trading|trend following|momentum strategy|pairs trading|
+      statistical arbitrage|market timing
+
+  - slug: portfolio-optimization
+    label: Portfolio Construction
+    ord: 50
+    arxiv_cats: [q-fin.PM]
+    gh_topics: [portfolio-optimization, portfolio-management, asset-allocation, efficient-frontier, riskfolio, pyportfolioopt]
+    include: >-
+      portfolio optimi[sz]ation|mean[- ]variance|efficient frontier|
+      asset allocation|risk parity|black[- ]litterman|
+      covariance (matrix )?estimation|shrinkage estimator|
+      maximum diversification|hierarchical risk parity|kelly criterion|
+      rebalanc|portfolio choice|utility maximi[sz]ation
+
+  - slug: factor-investing
+    label: Factors & Asset Pricing
+    ord: 60
+    arxiv_cats: [q-fin.PM, q-fin.ST]
+    gh_topics: [factor-investing, asset-pricing, fama-french, smart-beta, alpha-factors]
+    include: >-
+      factor model|fama[- ]french|cross[- ]section of (stock |expected )?returns|
+      asset pricing|anomal(y|ies)|risk premi(um|a)|
+      value premium|momentum factor|carry trade|
+      characteristics.{0,20}returns|expected returns|capm|
+      stochastic discount factor|betting against beta
+
+  - slug: ml-for-finance
+    label: ML for Finance
+    ord: 70
+    arxiv_cats: [q-fin.CP, q-fin.ST]
+    gh_topics: [machine-learning, deep-learning, reinforcement-learning, finance-ml, quantitative-finance, neural-network]
+    include: >-
+      machine learning|deep learning|neural network|reinforcement learning|
+      random forest|gradient boosting|transformer|lstm|
+      deep hedging|generative adversarial|variational autoencoder|
+      large language model|llm
+
+  - slug: risk-credit
+    label: Risk & Credit
+    ord: 80
+    arxiv_cats: [q-fin.RM]
+    gh_topics: [risk-management, credit-risk, var, value-at-risk, stress-testing, basel]
+    include: >-
+      value[- ]at[- ]risk|expected shortfall|tail risk|
+      credit risk|default probability|probability of default|
+      credit spread|counterparty risk|systemic risk|contagion|
+      stress test|basel|capital requirement|risk measure|coherent risk|
+      drawdown|bankruptcy prediction
+
+  - slug: fixed-income-macro
+    label: Fixed Income & Macro
+    ord: 90
+    arxiv_cats: [q-fin.GN, q-fin.EC, econ.EM]
+    gh_topics: [fixed-income, bonds, yield-curve, macroeconomics, interest-rates]
+    include: >-
+      yield curve|term structure|interest rate model|
+      bond pricing|duration|convexity|
+      monetary policy|central bank|inflation expectation|
+      sovereign (debt|spread)|nelson[- ]siegel|
+      hull[- ]white|vasicek|cir model
+
+  - slug: crypto-defi
+    label: Crypto & DeFi
+    ord: 100
+    arxiv_cats: [q-fin.TR, q-fin.GN]
+    gh_topics: [cryptocurrency, defi, blockchain, bitcoin, ethereum, crypto-trading]
+    include: >-
+      cryptocurrenc|bitcoin|ethereum|blockchain|
+      decentrali[sz]ed finance|defi|automated market maker|
+      stablecoin|perpetual (swap|future)|liquidity pool|
+      miner extractable|impermanent loss
+
+  - slug: time-series-forecasting
+    label: Time Series & Forecasting
+    ord: 110
+    arxiv_cats: [q-fin.ST, stat.AP]
+    gh_topics: [time-series, forecasting, econometrics, statsmodels, arch]
+    include: >-
+      time series|forecast|garch|arima|
+      long memory|regime switch|hidden markov|
+      cointegration|unit root|realized volatility|
+      state space model|kalman filter|nowcast
+
+  - slug: alt-data-nlp
+    label: Alt Data & NLP
+    ord: 120
+    arxiv_cats: [q-fin.ST, q-fin.GN]
+    gh_topics: [nlp, sentiment-analysis, alternative-data, web-scraping, news-analytics, finbert]
+    include: >-
+      sentiment analysis|news sentiment|textual analysis|
+      alternative data|satellite (image|data)|
+      earnings call|10-k|filing|edgar|
+      social media.{0,20}(return|price|market)|finbert|
+      natural language processing|topic model
+
+# Repos that keep showing up and are never wanted, matched on full_name.
+repo_blocklist:
+  - "^.*/awesome-.*$"
+  - "^.*(tutorial|course|bootcamp|learning-path|interview|roadmap|cheatsheet).*$"
+  - "^.*/(dotfiles|blog|homepage|portfolio-website|resume|cv)$"
+
+# Ingest-time quality gate for the automatic GitHub watchlist.
+repo_gate:
+  min_stars: 15
+  max_months_since_push: 24
+  allow_forks: false
+  allow_archived: false
+
+# Single words too precise to lose but impossible to derive from the regexes
+# above (a bare word from a regex alternative is usually far too broad).
+# Merged onto the matching theme at load time.
+search_extra:
+  volatility-options: [implied volatility, volatility surface, variance swap, volatility risk premium]
+  derivatives-pricing: [risk neutral measure, exotic derivatives, credit valuation adjustment]
+  market-microstructure: [limit order book, order flow imbalance, price impact]
+  execution-algo-trading: [optimal execution, statistical arbitrage, pairs trading]
+  portfolio-optimization: [portfolio optimization, risk parity, hierarchical risk parity]
+  factor-investing: [cross section of stock returns, factor investing, equity risk premium]
+  ml-for-finance: [deep learning finance, reinforcement learning trading, deep hedging]
+  risk-credit: [value at risk, expected shortfall, systemic risk, credit default swap]
+  fixed-income-macro: [term structure of interest rates, yield curve, monetary policy shocks]
+  crypto-defi: [decentralized finance, automated market maker, cryptocurrency returns]
+  time-series-forecasting: [realized volatility, regime switching, garch model]
+  alt-data-nlp: [news sentiment, textual analysis, earnings call transcripts]
+
+# OpenAlex discovery is deliberately gated to the economics/finance/accounting
+# subfields. Without it, "microstructure" pulls in metallurgy, "transformer"
+# pulls in electrical engineering and "drawdown" pulls in hydrology. arXiv
+# ingest already covers the maths, physics and CS side of quant finance, so the
+# two sources divide the literature cleanly instead of fighting over it.
+openalex:
+  subfields:
+    - subfields/2003   # Finance
+    - subfields/2002   # Economics and Econometrics
+    - subfields/1402   # Accounting
+    - subfields/2000   # General Economics, Econometrics and Finance
+
+# Generic GitHub topics collide across domains exactly as search phrases do:
+# `topic:options` returns dropdown widgets, `topic:volatility` returns memory
+# forensics, `topic:arch` returns Linux packaging. A repo therefore has to be
+# anchored to finance by either an unambiguous topic or a finance term in its
+# name, description or topics.
+repo_anchor:
+  topics:
+    - quantitative-finance
+    - quantitative-trading
+    - algorithmic-trading
+    - algotrading
+    - trading-bot
+    - trading-strategies
+    - backtesting
+    - options-pricing
+    - option-pricing
+    - implied-volatility
+    - derivatives
+    - quantlib
+    - portfolio-optimization
+    - portfolio-management
+    - asset-allocation
+    - factor-investing
+    - asset-pricing
+    - fama-french
+    - market-microstructure
+    - limit-order-book
+    - orderbook
+    - high-frequency-trading
+    - hft
+    - tick-data
+    - credit-risk
+    - value-at-risk
+    - risk-management
+    - fixed-income
+    - yield-curve
+    - crypto-trading
+    - defi
+    - fintech
+    - finance
+    - stock-market
+    - financial-analysis
+    - technical-analysis
+    - econometrics
+  # Every alternative is word-anchored. Unanchored stems produced exactly the
+  # false positives you would expect: `defi` matched "model-definition" and
+  # pulled in huggingface/transformers, `quant` matched "quantization" and
+  # pulled in LlamaFactory, `broker` matched "message broker" and pulled in
+  # redis. Bare coin names are gone too, since bitcoin/bitcoin is a node
+  # implementation rather than anything quantitative.
+  require: >-
+    \bfinanc\w*|
+    \btrading\b|\btrader\w*|\binvest\w*|\bportfolio\w*|
+    \bmarkets?\b|\bstocks?\b|\bequit(y|ies)\b|\bshares?\b|
+    \boption(s)? (pricing|trading|market|chain)|\boption pricing\b|
+    \bderivatives?\b|\bswaps?\b|\bswaptions?\b|\bfutures\b|\bforex\b|
+    \bvolatilit\w*|\bhedg\w*|\barbitrage\b|\bbacktest\w*|
+    \bbrokerage\b|\bbroker api\b|\bstock exchange\b|\bcrypto exchange\b|
+    \btickers?\b|\bohlcv?\b|\bcandlesticks?\b|\btechnical analysis\b|
+    \bquant\b|\bquantitative\w*|\bquantlib\b|
+    \basset (pricing|allocation|management|class)|\bassets under management\b|
+    \bbond (pricing|yield|market)|\b(government|corporate|treasury) bonds?\b|
+    \byield curve\b|\bterm structure\b|\binterest rates?\b|
+    \bcredit risk\b|\bmarket risk\b|\brisk (management|model|parity|premium|metrics)\b|
+    \bvalue at risk\b|\bexpected shortfall\b|\bdrawdowns?\b|
+    \bvaluation\b|\bearnings\b|\bdividends?\b|\bfundamentals\b|
+    \bcrypto\w* (trading|market|exchange|data|portfolio)|
+    \bdefi\b|\bdecentralized finance\b|\bautomated market maker\b|
+    \beconometric\w*|\bmacroeconom\w*|\bcentral bank\b|
+    \bblack[- ]scholes\b|\bsharpe ratio\b|\border book\b|\blimit order\b|
+    \bmarket data\b|\bmarket making\b|\bexecution algorithm\b|
+    \bsec filings?\b|\bedgar\b|\bbloomberg\b|\byfinance\b|\byahoo finance\b
+  veto: >-
+    memory forensic|malware|incident response|reverse engineer|
+    select box|dropdown|autocomplete|form control|ui component|css framework|
+    linux distribution|package manager|arch linux|
+    game engine|minecraft|discord bot|
+    photo|image editor|video player|music player|
+    message broker|key.value store|web framework|orm library|
+    photon transport|molecular dynam|finite element|
+    quantization (library|toolkit)|\bcompiler\b
