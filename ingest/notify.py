@@ -18,10 +18,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
 import subprocess
 import sys
 from pathlib import Path
-from xml.sax.saxutils import escape
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -32,6 +33,41 @@ MAX_TOASTS = 5                          # per run, so a busy morning stays reada
 
 
 # ------------------------------------------------------------------- toast ---
+# The script below never changes. Text reaches it through the environment, and
+# PowerShell escapes it for XML itself.
+#
+# Toast text is not ours: it carries repository names and descriptions written
+# by strangers on GitHub. Interpolating that into the script would hand any of
+# them a shell here, since a description holding `'@` at the start of a line
+# closes a here-string and everything after it runs. Escaping for XML does not
+# help, because the injection lands in the PowerShell layer rather than the XML
+# one.
+_TOAST_PS = """
+$ErrorActionPreference = 'Stop'
+[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
+[Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom, ContentType = WindowsRuntime] | Out-Null
+$title = [System.Security.SecurityElement]::Escape($env:BW_TOAST_TITLE)
+$body  = [System.Security.SecurityElement]::Escape($env:BW_TOAST_BODY)
+$xml = New-Object Windows.Data.Xml.Dom.XmlDocument
+$xml.LoadXml("<toast><visual><binding template='ToastGeneric'><text>$title</text><text>$body</text></binding></visual></toast>")
+$toast = New-Object Windows.UI.Notifications.ToastNotification $xml
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($env:BW_TOAST_APP).Show($toast)
+"""
+
+_CONTROL = re.compile(r"[\x00-\x1f\x7f]")
+TOAST_CHARS = 200
+
+
+def clean_toast_text(text: str) -> str:
+    """One line, no control characters, bounded length.
+
+    Belt and braces next to the environment handoff: a notification is one line
+    of text either way, and a newline in it is a sign of something other than a
+    repository name.
+    """
+    return _CONTROL.sub(" ", str(text or ""))[:TOAST_CHARS].strip()
+
+
 def toast(title: str, body: str, timeout: int = 20) -> bool:
     """Raise a Windows notification, returning whether it went out.
 
@@ -42,22 +78,14 @@ def toast(title: str, body: str, timeout: int = 20) -> bool:
     """
     if sys.platform != "win32":
         return False
-    script = f"""
-$ErrorActionPreference = 'Stop'
-[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
-[Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom, ContentType = WindowsRuntime] | Out-Null
-$xml = New-Object Windows.Data.Xml.Dom.XmlDocument
-$xml.LoadXml(@'
-<toast><visual><binding template="ToastGeneric">
-<text>{escape(title)}</text><text>{escape(body)}</text>
-</binding></visual></toast>
-'@)
-$toast = New-Object Windows.UI.Notifications.ToastNotification $xml
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('{APP_ID}').Show($toast)
-"""
+    env = {**os.environ,
+           "BW_TOAST_TITLE": clean_toast_text(title),
+           "BW_TOAST_BODY": clean_toast_text(body),
+           "BW_TOAST_APP": APP_ID}
     try:
-        r = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", script],
-                           capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(
+            ["powershell", "-NoProfile", "-NonInteractive", "-Command", _TOAST_PS],
+            capture_output=True, text=True, timeout=timeout, env=env)
         return r.returncode == 0
     except (OSError, subprocess.SubprocessError):
         return False

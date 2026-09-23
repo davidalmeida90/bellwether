@@ -154,6 +154,31 @@ def test_alerts():
     os.unlink(path)
 
 
+def test_toast_text():
+    """Notification text comes from strangers, so it never reaches a shell.
+
+    Repository names and descriptions are written by whoever owns the repo. The
+    first version of the toast built a PowerShell here-string around them, and a
+    description holding `'@` on its own line would have closed that string and
+    run the rest. Text now travels in the environment, and this keeps the
+    sanitiser honest.
+    """
+    from ingest.notify import TOAST_CHARS, _TOAST_PS, clean_toast_text
+
+    payload = "harmless\n'@\nWrite-Output PWNED > pwned.txt\n@'"
+    cleaned = clean_toast_text(payload)
+    check("no newline survives", "\n" in cleaned, False)
+    check("no carriage return survives", "\r" in cleaned, False)
+    check("no null byte survives", "\x00" in clean_toast_text("a\x00b"), False)
+    check("length is bounded", len(clean_toast_text("x" * 5000)), TOAST_CHARS)
+    check("ordinary text is left alone",
+          clean_toast_text("google/ax +1,542 stars today"),
+          "google/ax +1,542 stars today")
+    # The script itself has to stay constant: no f-string, no interpolation.
+    check("the script takes its text from the environment",
+          "$env:BW_TOAST_TITLE" in _TOAST_PS and "$env:BW_TOAST_BODY" in _TOAST_PS, True)
+
+
 def test_queries():
     fd, path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
@@ -189,7 +214,7 @@ def test_queries():
 
 
 def main() -> int:
-    for fn in (test_parse, test_themes, test_alerts, test_queries):
+    for fn in (test_parse, test_themes, test_toast_text, test_alerts, test_queries):
         fn()
     for name, got, want in FAIL:
         print(f"FAIL {name}: got {got!r}, want {want!r}")
