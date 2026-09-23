@@ -521,7 +521,10 @@ def compute_metrics(con, verbose: bool = True) -> dict:
 
         # Dividing by log(stars) is what lets a 300 star repo adding 80 outrank
         # a 40k star repo adding 200.
-        momentum = (stars_30d / math.log(1 + max(latest, 1))) if stars_30d else None
+        # `is not None` rather than a truth test: a repository measured at exactly
+        # zero growth is a known zero, not an unknown, and the Growing sort ranks
+        # the two differently.
+        momentum = (stars_30d / math.log(1 + max(latest, 1))) if stars_30d is not None else None
 
         # Spike: this week's gain far outside the repo's own weekly history.
         spike = 0
